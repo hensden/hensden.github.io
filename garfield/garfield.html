@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>I hate Mondays: Garfield Comic Strip Generation</title>
+    <title>I Hate Mondays: Garfield Comic Strip Generation</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="keywords" content="">
     <link rel="canonical" href="http://bair.berkeley.edu/blog/2017/10/26/dart/">
@@ -87,7 +87,7 @@
     
   <div id="title">     
   <hr>
-  <h1 >I hate Mondays: Garfield Comic Strip Generation</h1>
+  <h1 >I Hate Mondays: Garfield Comic Strip Generation</h1>
   
   Adithya Subramanian &nbsp;&nbsp; Neelansh Garg &nbsp;&nbsp; Rohan Karnawat &nbsp;&nbsp; Vedant Diwanji &nbsp;&nbsp; Veena Vijai <br> <br>
   <div id="date" > December 5th, 2019 </div>
@@ -125,14 +125,14 @@ Planar Grasping in Clutter.
 </p>
 -->
 
-<h1 id="challenges-with-on-policy-methods">Problem Statement</h1>
+<h1 id="problem-statement">Problem Statement</h1>
 
 <p>Given a comic strip with three panels, we remove the third panel and aim to generate a new third panel which is coherent with the previous two panels, and serves as an alternate ending for the given strip. ‘Generation’ of a panel refers to generating images of the characters in appropriate poses as well as their dialog.  </p>
 
 <p><p>Given input: image and text of first two panels</p>
 <p>Required output: image and text of a predicted third panel</p>
 
-<h1 id="limitation-1-providing-feedback">Dataset</h1>
+<h1 id="dataset">Dataset</h1>
 
 <p>We used a freely available and transcribed Garfield dataset on <strong><a href="https://c.garfield.dale.ro/">this</a></strong> website.</p>
 
@@ -144,16 +144,14 @@ Planar Grasping in Clutter.
 
 <p>Although Garfield began running in 1978, we chose to use strips from 1984 through 2019 in order to draw from a pool of images with consistent style.</p>
 
-<h2 id="limitation-2-safety2">Creating Alternate Datasets</h2>
+<h2 id="creating-alternate-datasets">Creating Alternate Datasets</h2>
 
 <p>For image generation experiments with a more limited scope, we sifted through the dataset to create two smaller datasets, namely:</p>
 
 <p>Strips which contained only Garfield, and no other character. However, any background was allowed, and inanimate objects which don’t speak (for instance, Garfield’s teddy bear, Pooky) were kept as well.</p>
 <p>Strips which had a plain background. Any number of characters, whether major or minor, dialog or no dialog, was allowed. </p>
 
-
-<h2 id="limitation-3-computation">Limitation 3: Computation</h2>
-
+<!-- how to cite 
 <p>Variants of On-Policy methods have been proposed to solve each of these problems
 individually. For example, Ho et al. got rid of the retroactive feedback by
 proposing, GAIL, which uses Reinforcement Learning to reduce covariate shift
@@ -161,8 +159,27 @@ proposing, GAIL, which uses Reinforcement Learning to reduce covariate shift
 a risky state and asks the supervisor to take over [4]. Sun et al. has explored
 incremental gradient updates to the model instead of a full retrain, which is
 computationally cheaper [5].</p>
+-->
+      
+<h2 id="missing-dialogs">Missing Dialogs</h2>
+     
+<p>While removing transcriptions for the Sunday strips, we noticed that several transcriptions of three-panel strips were missing - their values had been filled in as '(null)’ on the website. We manually added the transcriptions of the null values, which amounted to about 50-60 strips.</p>
 
+<h2 id="text-annotation">Text Annotation</h2>
+     
+<p>We performed text annotation for around 400 strips where we labeled which character uttered which dialog. We used these annotations, from the years 1984 and 1985, for our initial text experiments. We also tried to annotate the action being performed by every character in each panel for those strips and conducted similar experiments on this augmented dataset. </p>
 
+<p>Later, we narrowed our scope to text in Garfield-only strips, and subsequently created a new dataset for this purpose, which was aligned with the Garfield-only images dataset.</p>
+      
+<h1 id="intuition">High-Level Intuition</h1>
+    
+<p>Our aim was to use the information in the first two panels as context to generate the third. A high-level view of our experiments is:</p>
+<p>We used the images of the first two panels as context by passing them to a conditional GAN, i.e., pix2pix, to generate the third panel</p>
+<p>We used the text in the first two panels as context to generate another sentence by using fine-tuned pre-trained LSTM and GPT-2 models</p>
+<p>We attempted to fuse image and text embeddings using two architectures to create a joint embedding which would then produce the third panel</p>
+
+      
+      
 <h2 id="references">References</h2>
 
 <ol>
