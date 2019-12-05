@@ -89,62 +89,12 @@
   <hr>
   <h1 >I hate Mondays: Garfield Comic Strip Generation</h1>
   
-  Rohan Karnawat &nbsp;&nbsp; Vedant Diwanji &nbsp;&nbsp; Veena Vijai &nbsp;&nbsp; Adithya Subramanian &nbsp;&nbsp; Neelansh Garg  <br> <br>
-  <div id="date" > December 3rd, 2019 </div>
+  Adithya Subramanian &nbsp;&nbsp; Neelansh Garg &nbsp;&nbsp; Rohan Karnawat &nbsp;&nbsp; Vedant Diwanji &nbsp;&nbsp; Veena Vijai <br> <br>
+  <div id="date" > December 5th, 2019 </div>
   <hr>
   </div>
 
-
-
-<article class="post-content">
-  <p style="text-align:center;">
-<img src="http://bair.berkeley.edu/static/blog/dart/bed_making_gif.gif" alt="Bed-Making GIF" width="600" /><br />
-<i>
-Toyota HSR Trained with DART to Make a Bed.
-</i>
-</p>
-
-<p>In Imitation Learning (IL), also known as Learning from Demonstration (LfD), a
-robot learns a control policy from analyzing demonstrations of the policy
-performed by an algorithmic or human supervisor. For example, to teach a robot
-make a bed, a human would tele-operate a robot to perform the task to provide
-examples.  The robot then learns a control policy, mapping from images/states to
-actions which we hope will generalize to states that were not encountered during
-training.</p>
-
-<p>There are two variants of IL: Off-Policy, or Behavior Cloning, where the
-demonstrations are given independent of the robot’s policy.  However, when the
-robot encounters novel risky states it may not have learned corrective actions.
-This occurs because of “covariate shift”  a known challenge, where the states
-encountered during training differ from the states encountered during testing,
-reducing robustness. Common approaches to reduce covariate shift are On-Policy
-methods, such as DAgger, where the evolving robot’s policy is executed and the
-supervisor provides corrective feedback. However, On-Policy methods can be
-difficult for human supervisors, potentially dangerous, and computationally
-expensive.</p>
-
-<p>This post presents a robust Off-Policy algorithm called DART and summarizes how
-injecting noise into the supervisor’s actions can improve robustness. The
-injected noise allows the supervisor to provide corrective examples for the type
-of errors the trained robot is likely to make. However, because the optimized
-noise is small, it alleviates the difficulties of On-Policy methods. Details on
-DART are in a paper that will be presented at <a href="http://www.robot-learning.org/">the 1st Conference on Robot Learning in
-November</a>.</p>
-
-<p>We evaluate DART in  simulation with an algorithmic supervisor on MuJoCo tasks
-(Walker, Humanoid, Hopper, Half-Cheetah) and physical experiments with human
-supervisors training a Toyota HSR robot to perform grasping in clutter, where a
-robot must search through clutter for a goal object.  Finally, we show how
-DART can be applied in a complex system that leverages both classical robotics
-and learning techniques to teach the first robot to make a bed. For
-researchers who want to study and use robust Off-Policy approaches, <strong>we
-additionally announce the release of 
-<a href="https://berkeleyautomation.github.io/DART/">our codebase</a>
-on GitHub</strong>.</p>
-
-<!--more-->
-
-<h1 id="imitation-learnings-compounding-errors">Motivation</h1>
+<h1 id="motivation">Motivation</h1>
 
 <p>With the advent of Generative Adversarial Networks (GANs), deep learning now has immense application in creative domains. Generation of various types of media is becoming increasingly popular with GANs and their variants. Deep learning models based on Recurrent Neural Networks (RNNs) have found widespread application in text generation as well. However, the generation of images with relevant text still has massive scope. In our project, we propose the use of GANs and RNNs in the domain of visual storytelling: generation of comic strips.</p>
 
@@ -179,7 +129,7 @@ Planar Grasping in Clutter.
 
 <p>Given a comic strip with three panels, we remove the third panel and aim to generate a new third panel which is coherent with the previous two panels, and serves as an alternate ending for the given strip. ‘Generation’ of a panel refers to generating images of the characters in appropriate poses as well as their dialog.  </p>
 
-<p><p>Given input: image and text of first two panels</<p>p>
+<p><p>Given input: image and text of first two panels</p>
 <p>Required output: image and text of a predicted third panel</p>
 
 <h1 id="limitation-1-providing-feedback">Dataset</h1>
