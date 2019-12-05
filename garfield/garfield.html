@@ -146,162 +146,63 @@ on GitHub</strong>.</p>
 
 <h1 id="imitation-learnings-compounding-errors">Motivation</h1>
 
-<p>With the advent of Generative Adversarial Networks (GANs), deep learning now has immense application in creative domains. Generation of media for various applications are
-becoming increasingly popular with GANs and their variants. Recurrent Neural Networks (RNNs) have found widespread application in text generation as well. However, the generation of images with relevant text still has massive scope. In our project, we propose the use of GANs and RNNs in the domain of visual storytelling: generation of comic strips.
+<p>With the advent of Generative Adversarial Networks (GANs), deep learning now has immense application in creative domains. Generation of various types of media is becoming increasingly popular with GANs and their variants. Deep learning models based on Recurrent Neural Networks (RNNs) have found widespread application in text generation as well. However, the generation of images with relevant text still has massive scope. In our project, we propose the use of GANs and RNNs in the domain of visual storytelling: generation of comic strips.</p>
 
-Storytelling is very interesting from the creator’s point of view because the audience is not explicitly told how to feel. This is especially applicable to visual media like movies, because the audience draws complex conclusions just by watching a sequence of videos with/without dialog. Perhaps the art form that best exemplifies conveying meaning without explicitly telling the audience its core message, is the comic. Comic strips are extremely short, often as succinct as 3 panels - yet they are able to convey deep ideas through humour, sarcasm, and wit.
+<p>Comic strips are extremely short, often as succinct as 3 panels - yet they are able to convey deep ideas through humour, sarcasm, and wit, making them a unique mode of storytelling. Looking at a comic strip can be compared to watching a video with just 3 frames and 1-3 short sentences as subtitles,  and still being able to draw inferences about the message/story conveyed,  as well as interpolating the missing links between each panel. (TODO cite mysteries of the gutter)</p>
 
-After an extensive literature survey, we realized the compelling research possibilities in the generation of comics using deep learning techniques. A model which learns to relate text and images, and can generate sequential pairings of the same, would have numerous
-applications. Writers could use such a tool for creative inspiration. The unique style of artists could be understood quantitatively, and possibly replicated. The gap in this domain makes our project both challenging and appealing.
-</p>
+<p>After an extensive literature survey, we realized the compelling research possibilities in the comic strip generation using deep learning techniques. A model which learns to relate text and images, and can generate sequential pairings of the same, would have numerous
+applications. Writers could use such a tool for creative inspiration. The unique style of artists could be understood and studied quantitatively. The generation of both images and text for comics is a novel problem, and the gap in this domain makes our project both challenging and appealing.</p>
 
+<!-- using a gif
 <p style="text-align:center;">
 <img src="http://bair.berkeley.edu/static/blog/dart/alvinn.gif" alt="ALVINN." /><br />
 <i>
 ALVINN Suffering from Covariate Shift.
 </i>
-</p>
+</p> 
+-->
 
-<p>The car would start drifting to side of the road and not know how to recover.
-The reason for the car’s instability was that no data was collected on the
-side of the road.  During the data collection the supervisor always drove along
-the center of the road; however, if the robot began to drift from the
-demonstrations, it would not know how to recover because it saw no examples.</p>
 
-<p>This example, along with many others that researchers have tried, shows that
-Imitation Learning cannot be entirely solved with Behavior Cloning. In
-traditional Supervised Learning, the training distribution is de-coupled from
-the learned model, whereas in Imitation Learning, <em>the robot’s policy affects
-what state is queried next</em>. Thus the training and testing distributions are no
-longer equivalent, and this mismatch is known as 
-<strong><a href="http://sifaka.cs.uiuc.edu/jiang4/domain_adaptation/survey/node8.html">covariate shift</a></strong>.</p>
+<!-- Linking text -->    
+<!--<strong><a href="http://sifaka.cs.uiuc.edu/jiang4/domain_adaptation/survey/node8.html">covariate shift</a></strong>.</p> -->  
 
-<p>To reduce covariate shift, the objective of Imitation Learning had to be
-modified. The robot should now be expected to match the supervisor on the states
-it is likely to visit. Thus, if ALVINN is likely to drift to the side of the
-road, we expect that it will know what to do in those states.</p>
-
-<p>A robot’s policy and a supervisor’s policy can be denoted as $\pi_{\theta}$ and
-<script type="math/tex">\pi_{\theta^*}</script>, where $\pi$ is a function mapping state to action and
-$\theta$ is a parametrization, like weights in a neural network.   We can
-measure how close two policies are by what actions they apply at a given state,
-which we refer to as the surrogate loss, $l$.  A common surrogate loss is the
-squared Euclidean distance:</p>
-
-<script type="math/tex; mode=display">l(\pi_{\theta}(x), \pi_{\theta^*}(x)) = \|\pi_{\theta^*}(x)
--\pi_{\theta}(x)\|^2_2.</script>
-
-<p>Finally, we need a distribution over trajectories  $p(\xi|\theta)$, which
-indicate the trajectories, $\xi$, that are likely under the current policy
-$\pi_{\theta}$.  Our objective can then be written as follows:</p>
-
-<script type="math/tex; mode=display">\underset{\theta}{\mbox{min}}\; E_{p(\xi|\theta)} \underbrace{\sum^T_{t=1}
-l(\pi_{\theta}(x_t), \pi_{\theta^*}(x_t)) }_{J(\theta,\theta^*|\xi)}.</script>
-
-<p>Hence we want to minimize the expected surrogate loss on the distribution of
-states induced by the robot’s policy. This objective is challenging to solve
-because we don’t know what the robot’s policy is until after data has been
-collected, which creates a <em>chicken and egg</em> situation. We will now discuss an
-iterative On-Policy approach to overcome this problem.</p>
-
-<h1 id="reducing-shift-with-on-policy-methods">Reducing Shift with On-Policy Methods</h1>
-
-<p>A large body of work from Ross and Bagnell [6,7], has examined the theoretical
-consequences of covariate shift. In particular, they proposed the DAgger
-algorithm to help correct for it. DAgger can be thought of as an On-Policy
-algorithm — which rolls out the current robot policy during learning.</p>
-
-<p>The key idea of DAgger is to collect data from the current robot policy and
-update the model on the aggregate dataset. Implementation of DAgger requires
-iteratively rolling out the current robot policy, querying a supervisor for
-feedback on the states visited by the robot, and then updating the robot on the
-aggregate dataset across all iterations.</p>
-
-<p style="text-align:center;">
-<img src="http://bair.berkeley.edu/static/blog/dart/DAgger.png" alt="DAGGER." width="600" /><br />
-<i>
-The DAgger Algorithm.
-</i>
-</p>
-
-<p>Two years ago, we used DAgger to teach a robot to perform grasping in clutter
-(shown below), which requires a robot to search through objects via pushing to
-reach a desired goal object. Imitation Learning was advantageous in this task
-because we didn’t need to explicitly model the collision of multiple non-convex
-objects.</p>
-
+<!-- using an image
 <p style="text-align:center;">
 <img src="http://bair.berkeley.edu/static/blog/dart/izzy.gif" alt="Mechnical Search 1." width="250" height="250" /><br />
 <i>
 Planar Grasping in Clutter.
 </i>
 </p>
+-->
 
-<p>Our planar robot had a neural network policy that mapped images of the workspace
-to a control signal. We trained it with DAgger on 160 expert demonstrations.
-While we were able to teach the robot how to perform the task with a 90% success
-rate, we encountered several major hurdles that made it challenging to increase
-the complexity of the task.</p>
+<h1 id="challenges-with-on-policy-methods">Problem Statement</h1>
 
-<h1 id="challenges-with-on-policy-methods">Challenges with On-Policy Methods</h1>
+<p>Given a comic strip with three panels, we remove the third panel and aim to generate a new third panel which is coherent with the previous two panels, and serves as an alternate ending for the given strip. ‘Generation’ of a panel refers to generating images of the characters in appropriate poses as well as their dialog.  </p>
 
-<p>After applying DAgger to teach our robot, we wanted to study and better
-understand 3 key limitations related to On-Policy methods in order to scale up
-to more challenging tasks.</p>
+<p><p>Given input: image and text of first two panels</<p>p>
+<p>Required output: image and text of a predicted third panel</p>
 
-<h2 id="limitation-1-providing-feedback">Limitation 1: Providing Feedback</h2>
+<h1 id="limitation-1-providing-feedback">Dataset</h1>
 
-<p>In order to apply feedback to our robot, we had to do so retroactively with a
-labeling interface, shown below.</p>
+<p>We used a freely available and transcribed Garfield dataset on <strong><a href="https://c.garfield.dale.ro/">this</a></strong> website.</p>
 
-<p style="text-align:center;">
-<img src="http://bair.berkeley.edu/static/blog/dart/feedback.gif" alt="Mechnical Search 2." width="250" height="250" /><br />
-<i>
-Supervisor Providing Retroactive Feedback.
-</i>
-</p>
+<p>With the aforementioned constraints, we have a total of 11,199 strips. Our dataset already contains the dialog transcriptions in text format, which proved to be useful for language modeling. </p>
 
-<p>A supervisor had to manually move the pink overlay to tell the robot what it
-should have done after execution. When we tried to retrain the robot with
-different supervisors, we found it was very challenging to provide this feedback
-for most people. You can think of a human supervisor as a controller that needs
-to constantly adjust their actions to obtain the desired effect. However, with
-retroactive feedback the human must simulate what the action would be without
-seeing the outcome, which is quite unnatural.</p>
+<h2 id="challenges-with-on-policy-methods2">Choosing Images</h2>
 
-<p>To test this hypothesis, we performed a human study with 10 participants to
-compare DAgger against Behavior Cloning, where each participant was asked to
-train a robot to perform planar part singulation. We found that Behavior Cloning
-out-performed DAgger, suggesting that while DAgger mitigates the shift, in
-practice it may add systematic noise to the supervisor’s signal [2].</p>
+<p>Our project’s scope is restricted to only those strips which are 3 panels long; hence we have excluded Sunday strips which have 9 panels.</p>
 
-<h2 id="limitation-2-safety">Limitation 2: Safety</h2>
+<p>Although Garfield began running in 1978, we chose to use strips from 1984 through 2019 in order to draw from a pool of images with consistent style.</p>
 
-<p>On-Policy methods have the additional burden of needing to roll-out the current
-robot’s policy during execution. While our robot was able to perform the task at
-the end of training, for most of learning it wasn’t successful:</p>
+<h2 id="limitation-2-safety2">Creating Alternate Datasets</h2>
 
-<p style="text-align:center;">
-<img src="http://bair.berkeley.edu/static/blog/dart/policy_gif.gif" alt="Mechnical Search 3." width="250" height="250" /><br />
-<i>
-Robot Rolling Out Unsuccessful Policy.
-</i>
-</p>
+<p>For image generation experiments with a more limited scope, we sifted through the dataset to create two smaller datasets, namely:</p>
 
-<p>In unstructured environments, such as a self-driving car or home robotics, this
-can be problematic. Ideally, we would like to collect data with the robot while
-maintaining high performance throughout the entire process.</p>
+<p>Strips which contained only Garfield, and no other character. However, any background was allowed, and inanimate objects which don’t speak (for instance, Garfield’s teddy bear, Pooky) were kept as well.</p>
+<p>Strips which had a plain background. Any number of characters, whether major or minor, dialog or no dialog, was allowed. </p>
+
 
 <h2 id="limitation-3-computation">Limitation 3: Computation</h2>
-
-<p>Finally, when building systems either in simulation or the real world, we want
-to collect large amounts of data in parallel and update our policy sparingly.
-Neural networks can require significant computation time for retraining.
-However, On-Policy methods suffer when the policy is not updated frequently
-during data collection. Training on a large batch size of new data can cause
-significant changes to the current policy, which can push the robot’s
-distribution away from the previously collected data and make the aggregate
-dataset stale.</p>
 
 <p>Variants of On-Policy methods have been proposed to solve each of these problems
 individually. For example, Ho et al. got rid of the retroactive feedback by
@@ -311,224 +212,6 @@ a risky state and asks the supervisor to take over [4]. Sun et al. has explored
 incremental gradient updates to the model instead of a full retrain, which is
 computationally cheaper [5].</p>
 
-<p>While these methods can each solve some of these problems, ideally we want a
-solution to address all three. Off-Policy algorithms like Behavior Cloning do
-not exhibit these problems because they passively sample from the supervisor’s
-policy. Thus, we decided instead of extending On-Policy methods it might be more
-beneficial to make Off-Policy methods more robust.</p>
-
-<h1 id="off-policy-with-noise-injection">Off-Policy with Noise Injection</h1>
-
-<p>Off-Policy methods, like Behavior Cloning, can in fact have low covariate shift.
-If the robot is able to learn the supervisor’s policy perfectly, then it should
-visit the same states as the supervisor. In prior work we empirically found in
-simulation that with sufficient data and expressive learners, such as deep
-neural networks, Behavior Cloning is at parity with DAgger [2].</p>
-
-<p>In real world domains, though, it is unlikely that a robot can perfectly match a
-supervisor. Machine Learning algorithms generally have a long tail in terms of
-sample complexity, so the amount of data and computation needed to perfectly
-match a supervisor may be unreasonable. However, it is likely that we can
-achieve small non-zero test error.</p>
-
-<p>Instead of attempting to perfectly learn the supervisor, we propose simulating
-small amounts of error in the supervisor’s policy to better mimic the trained
-robot. Injecting noise into the supervisor’s policy during teleoperation is one
-way to simulate this small test error during data collection. Noise injection
-forces the supervisor to provide corrective examples to these small disturbances
-as they try to perform the task.  Shown below is the intuition of how noise
-injection creates a funnel of corrective examples around the supervisor’s
-distribution.</p>
-
-<p style="text-align:center;">
-<img src="http://bair.berkeley.edu/static/blog/dart/dart_intuition.png" alt="DART intuition." width="300" />
-<br />
-<i>
-Noise Injection forces the supervisor to provide corrective examples,<br />
-so that the robot can learn to recover.
-</i>
-</p>
-
-<p>Additionally, because we are only injecting small noise levels, we don’t suffer
-as many limitations compared to On-Policy methods. A supervisor can normally be
-robust to small random disturbances that are concentrated around their current
-action. We will now formalize noise injection a bit to help understand its
-effect more.</p>
-
-<p>Denote by <script type="math/tex">p(\xi|\pi_{\theta^*},\psi)</script> a distribution over trajectories with
-noise injected into the supervisor’s distribution
-<script type="math/tex">\pi_{\theta^*}(\mathbf{u}|\mathbf{x},\psi)</script>. The parameter $\psi$ represents
-the sufficient statistics that define the noise distribution. For example, if
-Gaussian noise is injected parameterized by $\psi$, then
-<script type="math/tex">\pi_{\theta^*}(\mathbf{u}|\mathbf{x},\psi) =
-\mathcal{N}(\pi_{\theta^*}(\mathbf{x}), \Sigma)</script>.  Note, the stochastic
-supervisor’s distribution is a slight abuse of notation.
-<script type="math/tex">\pi_{\theta^*}(\mathbf{u}|\mathbf{x},\psi)</script> is a distribution over actions,
-where as <script type="math/tex">\pi_{\theta^*}(\mathbf{x})</script> is a deterministic function mapping to a
-single action.</p>
-
-<p>Similar to Behavior Cloning, we can sample demonstrations from the
-noise-injected supervisor and minimize the expected loss via standard supervised
-learning techniques:</p>
-
-<script type="math/tex; mode=display">\theta^R = \underset{\theta}{\mbox{argmin }} E_{p(\xi|\pi_{\theta^*},\psi)}
-J(\theta,\theta^* | \xi)</script>
-
-<p>This equation, though, does not explicitly minimize the covariate shift for
-arbitrary choices of $\psi$; the $\psi$ needs to be chosen to best simulate the
-error of the final robot’s policy, which may be complex for high dimensional
-action spaces.  One approach to choose $\psi$ is grid-search, but this requires
-expensive data collection, which can be prohibitive in the physical world or in
-high fidelity simulation.</p>
-
-<p>Instead of grid-search, we can formulate the selection of $\psi$ as a maximum
-likelihood problem. The objective is to increase the probability of the
-supervisor applying the robot’s control.</p>
-
-<script type="math/tex; mode=display">\underset{\psi}{\mbox{min}} \: E_{p(\xi|\pi_{\theta^R})} -\sum^{T-1}_{t=0} \:
-\mbox{log} [\pi_{\theta^*}(\pi_{\theta^R}(\mathbf{x_t})|\mathbf{x_t},\psi)]</script>
-
-<p>This objective states that we want the noise injected supervisor to try and
-match the final robot’s policy. In the paper, we show that this explicitly
-minimizes the distance between the supervisor and robot’s distribution. A clear
-limitation of this optimization problem though is that it requires knowing the
-final robot’s distribution $p(\xi|\pi_{\theta^R})$, which is determined only
-after the data is collected.  In the next section, we present DART, which
-applies an iterative approach to the optimization.</p>
-
-<h2 id="dart-disturbances-for-augmenting-robot-trajectories">DART: Disturbances for Augmenting Robot Trajectories</h2>
-
-<p>The above objective cannot be solved because $p(\xi|\pi_{\theta^R})$ is not
-known until after the robot has been trained.  We can instead iteratively sample
-from the supervisor’s distribution with the current noise parameter, $\psi_k$,
-and minimize the negative log-likelihood of the noise-injected supervisor taking
-the current robot’s, $\pi_{\hat{\theta}}$, control.</p>
-
-<script type="math/tex; mode=display">\hat{\psi}_{k+1} = \underset{\psi}{\mbox{argmin}} \: E_{p(\xi|\pi_{\theta^*},
-\psi_k)} -\sum^{T-1}_{t=0}\mbox{log} \:
-[\pi_{\theta^*}(\pi_{\hat{\theta}}(\mathbf{x_t})|\mathbf{x_t},\psi)]</script>
-
-<p>The above iterative process can be slow to converge because it is optimizing the
-noise with respect to the current robot’s policy. We can obtain a better
-estimate by observing that the supervisor should simulate as much expected error
-as the final robot policy, <script type="math/tex">E_{p(\xi|\pi_{\theta^R})}
-J(\theta^R,\theta^*|\xi)</script>.  It is possible that we have some knowledge of this
-quantity from previously training on similar domains. In the paper, we show how
-to incorporate this knowledge in the form of a prior. For some common noise
-distributions, the objective can be solved in closed form, as detailed in the
-paper. Thus, the optimization problem determines the shape of the noise injected
-and the prior helps determine the magnitude.</p>
-
-<p>Our algorithm DART, iteratively solves this optimization problem to best set the
-noise term. DART is still an iterative algorithm like On-Policy methods.
-<em>Through the iterative process, DART optimizes $\psi$ to better simulate the
-error in the final robot’s policy.</em></p>
-
-<h1 id="evaluating-dart">Evaluating DART</h1>
-
-<p>To understand how effectively DART reduces covariate shift and to determine if
-it suffers from similar limitations as On-Policy methods, we ran experiments in
-4 MuJoco domains, as shown below. The supervisor was a policy trained with TRPO
-and the noise we injected was Gaussian.</p>
-
-<p style="text-align:center;">
-<img src="http://bair.berkeley.edu/static/blog/dart/ni_a_results-eps-converted-to.png" alt="DART results." /><br />
-</p>
-
-<p>To test if DART suffers from updating the policy after larger batches, we only
-updated the model after every $K$ demonstrations for all experiments. DAgger was
-updated after every demonstration and DAgger-B was updated after every $K$.  The
-results show that DART is able to have the same performance as DAgger, but is
-significantly faster in terms of computation.  DAgger-B is relatively similar in
-computation time, but suffers significantly in performance, suggesting DART can
-significantly reduce computation time.</p>
-
-<p>We finally compared DART to Behavior Cloning in a human study for the task of
-grasping in clutter, shown below.  In the task, a Toyota HSR robot was trained to
-reach a goal object by pushing objects away with its gripper.</p>
-
-<p style="text-align:center;">
-<img src="http://bair.berkeley.edu/static/blog/dart/hsr.gif" alt="DART results." /><br />
-<i>
-Toyota HSR Trained with DART for Grasping in Clutter.
-</i>
-</p>
-
-<p>The task is more complex than the one above because the robot now sees images of
-the world taken from an eye-in-hand camera. We compared 4 humans subjects and
-saw that by injecting noise in the controller, we were able to receive a win
-over Behavior Cloning of 62%. DART was able to reduce the shift on the task with
-human supervisors.</p>
-
-<h1 id="robotic-bed-making-a-testbed-for-covariate-shift">Robotic Bed Making: A Testbed for Covariate Shift</h1>
-
-<p>To better understand how errors compound in real world robotic systems, we built
-a literal test bed. Robotic Bed Making has been a challenging task in robotics
-due to it requiring mobile manipulation of deformable objects and sequential
-planning. Imitation Learning is one way to sidestep some of the challenges of
-deformable object manipulation because it doesn’t require modeling the bed
-sheets.</p>
-
-<p>The goal of our bed making system was to have a robot learn to stretch the
-sheets over the bed frame. The task was designed so that the robot must learn
-one policy to decide where to grasp the bed sheet and another transition policy
-to decide whether the robot should try again or switch to the other bed side.
-We trained the bed making policy with 50 demonstrations.</p>
-
-<p style="text-align:center;">
-<img src="http://bair.berkeley.edu/static/blog/dart/bed_system.png" alt="DART results, bed-making." /><br />
-<i>
-Bed Making System.
-</i>
-</p>
-
-<p>DART was applied to inject Gaussian noise into grasping policy because we
-assumed there would be considerable error in determining where to grasp. The
-optimized covariance matrix decided to inject more noise in the horizontal
-direction of the bed, because that is where the edge of the sheet varied more
-significantly and subsequently the robot had higher error.</p>
-
-<p>In order to test how large covariate shift was in the system, we can take our
-trained policy $\pi_{\theta^R}$ and write its performance with the following
-decomposition.</p>
-
-<script type="math/tex; mode=display">% <![CDATA[
-\begin{align}
-E_{p(\xi |\pi_{\theta^R})} J(\theta^R,\theta^*|\xi) &= \underbrace{E_{p(\xi |\pi_{\theta^R})}  \sum^T_{t=1} l(\pi_{\theta}(x_t), \pi_{\theta^*}(x_t)) -  E_{p(\xi |\pi_{\theta^*}, \psi)}  \sum^T_{t=1} l(\pi_{\theta}(x_t), \pi_{\theta^*}(x_t))}_{\text{Shift}} \\
-&+ \underbrace{E_{p(\xi |\pi_{\theta^*},\psi)}  \sum^T_{t=1} l(\pi_{\theta}(x_t), \pi_{\theta^*}(x_t)) }_{\text{Loss}},
-\end{align} %]]></script>
-
-<p>where the first term on the right-hand side corresponds to the covariate shift.
-Intuitively, the covariate shift is the difference between the expected error on
-the robot’s distribution and the supervisor’s distribution. When we measured
-these quantities on the bed making setup, we observed noticeable covariate shift
-in the transition policy trained with Behavior Cloning.</p>
-
-<p style="text-align:center;">
-<img src="http://bair.berkeley.edu/static/blog/dart/cs_graph.png" alt="DART results, covariate shift." width="500" /><br />
-<i>
-Covariate Shift in Bed Making Task.
-</i>
-</p>
-
-<p>We attribute this covariate shift due to the fact that with Behavior Cloning the
-robot rarely saw unsuccessful demonstrations; thus the transition policy never
-knew what failure was. DART gave a more diverse set of states, which allowed the
-policy to have better class balance. DART was able to train a robust policy that
-allowed it to perform the bed making task even when novel objects were placed on
-the bed, as shown at the beginning of the blog post. When distractor objects are
-placed on the bed DART obtained a 97% sheet coverage, whereas Behavior Cloning
-achieved only 63%.</p>
-
-<p>These initial results suggest that covariate shift can occur in modern day
-systems that use learning components. We will soon release a longer preprint on
-the Bed Making Setup for more information.</p>
-
-<p>DART presents a way to correct for shift via the injection of small optimized
-noise. Going forward, we are considering more complex noise models that better
-capture the temporal structure of the robot’s error.</p>
-
-<p>(For papers and updated information, <a href="http://autolab.berkeley.edu">see UC Berkeley’s AUTOLAB website</a>.)</p>
 
 <h2 id="references">References</h2>
 
