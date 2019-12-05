@@ -144,14 +144,16 @@ on GitHub</strong>.</p>
 
 <!--more-->
 
-<h1 id="imitation-learnings-compounding-errors">Imitation Learning’s Compounding Errors</h1>
+<h1 id="imitation-learnings-compounding-errors">Motivation</h1>
 
-<p>In the late 80s, Behavior Cloning was applied to teach cars how to drive, with a
-project known as ALVINN (Autonomous Land Vehicle in a Neural Network). In
-ALVINN, a neural network was trained on driving demonstrations and learned a
-policy that mapped  images of the road to the supervisor’s steering angle.
-Unfortunately, after learning, the policy was unstable, as indicated in the
-following video:</p>
+<p>With the advent of Generative Adversarial Networks (GANs), deep learning now has immense application in creative domains. Generation of media for various applications are
+becoming increasingly popular with GANs and their variants. Recurrent Neural Networks (RNNs) have found widespread application in text generation as well. However, the generation of images with relevant text still has massive scope. In our project, we propose the use of GANs and RNNs in the domain of visual storytelling: generation of comic strips.
+
+Storytelling is very interesting from the creator’s point of view because the audience is not explicitly told how to feel. This is especially applicable to visual media like movies, because the audience draws complex conclusions just by watching a sequence of videos with/without dialog. Perhaps the art form that best exemplifies conveying meaning without explicitly telling the audience its core message, is the comic. Comic strips are extremely short, often as succinct as 3 panels - yet they are able to convey deep ideas through humour, sarcasm, and wit.
+
+After an extensive literature survey, we realized the compelling research possibilities in the generation of comics using deep learning techniques. A model which learns to relate text and images, and can generate sequential pairings of the same, would have numerous
+applications. Writers could use such a tool for creative inspiration. The unique style of artists could be understood quantitatively, and possibly replicated. The gap in this domain makes our project both challenging and appealing.
+</p>
 
 <p style="text-align:center;">
 <img src="http://bair.berkeley.edu/static/blog/dart/alvinn.gif" alt="ALVINN." /><br />
