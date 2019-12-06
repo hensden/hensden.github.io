@@ -24,7 +24,7 @@ Styles for home page logo and nav
 */
 
 body {
-  background-color: orange;
+  background-color: black;
 }
 
 #title{
@@ -33,7 +33,7 @@ body {
 }
 
 #blog {
-  background-color: #fedaca;
+  background-color: white;
   width: 75%;
   padding: 5%;
   margin-left: 8%;
